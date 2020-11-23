@@ -1,0 +1,17 @@
+.photo-gallery-text-h4 {
+  margin: 0 auto;
+  font-size: 2em;
+}
+
+.photo-gallery-image-box {
+  margin: 2px 4px;
+  cursor: pointer;
+}
+
+.photo-gallery-image-box:hover {
+  transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  -moz-transform: scale(1.05);
+  -o-transform: scale(1.05);
+}
