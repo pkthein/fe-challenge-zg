@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import './index.css'
 
+import SlideUpImage from './SlideUpImage'
+
 const PhotoGallery = ({ data }) => {
   const [image, setImage] = useState({ url: '', caption: '', index: 0 })
   const [visible, setVisible] = useState(false)
   const [prevY, setPrevY] = useState(0)
-  const [prevX, setPrevX] = useState(0)
 
   useEffect(() => {
   }, [image, visible])
@@ -18,7 +19,7 @@ const PhotoGallery = ({ data }) => {
     window.scrollTo(0, 0)
   }
 
-  const onClose = () => {
+  const handleOnClose = () => {
     setVisible(false)
 
     // checking if the browser is safari for smooth scroll
@@ -37,24 +38,14 @@ const PhotoGallery = ({ data }) => {
     }
   }
 
-  const nextPhoto = () => {
+  const handleNextPhoto = () => {
     const newIndex = image.index === data.length - 1 ? 0 : image.index + 1
     setImage({ ...data[newIndex], index: newIndex })
   }
 
-  const previousPhoto = () => {
+  const handlePreviousPhoto = () => {
     const newIndex = image.index === 0 ? data.length - 1 : image.index - 1
     setImage({ ...data[newIndex], index: newIndex })
-  }
-
-  const dragChangePhoto = newX => {
-    const switchDistance = 75
-
-    if ((newX - prevX) > switchDistance) {
-      previousPhoto()
-    } else if ((newX - prevX) < -switchDistance) {
-      nextPhoto()
-    }
   }
 
   return (
@@ -68,60 +59,32 @@ const PhotoGallery = ({ data }) => {
       <hr/>
 
       {
-        data.length > 0 &&
-        data.map((img, idx) => (
-          <img
-            className="photo-gallery-image-box" width="300"
-            key={ idx } alt={ img.caption } src={ img.url }
-            onClick={ e => displayImage(idx) }
-          />
-        ))
+        data.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {
+              data.map((img, idx) => (
+                <div key={ idx } className="photo-gallery-image-box-container">
+                  <img
+                    className="photo-gallery-image-box" width="300"
+                    alt={ img.caption } src={ img.url }
+                    onClick={ () => displayImage(idx) }
+                  />
+                  <span>{ img.caption }</span>
+                </div>
+              ))
+            }
+          </div>
+        )
       }
 
       {
         visible && (image.url && image.caption) && (
-          <div className="photo-gallery-slide-up">
-            <div>
-              <button
-                className="i-btn photo-gallery-image close"
-                onClick={ () => onClose() }
-              >
-                X
-              </button>
-              <button
-                className="i-btn photo-gallery-image next"
-                onClick={ () => nextPhoto() }
-              >
-                { '>' }
-              </button>
-              <button
-                className="i-btn photo-gallery-image prev"
-                onClick={ () => previousPhoto() }
-              >
-                { '<' }
-              </button>
-            </div>
-
-            <div
-              className="photo-gallery-slide-up-image-container photo-gallery-grabbable"
-              draggable={ true }
-              onDragStart={ e => setPrevX(e.screenX) }
-              onDragEnd={ e => dragChangePhoto(e.screenX) }
-              onDragOver={ e => e.preventDefault() }
-              onTouchStart={ e => setPrevX(e.changedTouches[0].screenX) }
-              onTouchEnd={ e => dragChangePhoto(e.changedTouches[0].screenX) }
-            >
-              <div className="photo-gallery-slide-up-image-grouping">
-                <img
-                  className="photo-gallery-slide-up-image "
-                  alt={ image.caption } src={ image.url }
-                />
-                <div className="photo-gallery-slide-up-image-caption">
-                  { image.caption }
-                </div>
-              </div>
-            </div>
-          </div>
+          <SlideUpImage
+            image={ image }
+            onClose={ () => handleOnClose() }
+            onNextPhoto={ () => handleNextPhoto() }
+            onPreviousPhoto={ () => handlePreviousPhoto() }
+          ></SlideUpImage>
         )
       }
     </div>
@@ -139,7 +102,6 @@ PhotoGallery.propTypes = {
     index: PropTypes.number
   }),
   visible: PropTypes.bool,
-  prevX: PropTypes.number,
   prevY: PropTypes.number
 }
 
