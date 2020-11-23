@@ -15,8 +15,17 @@ const PhotoGallery = ({ data }) => {
     setVisible(true)
   }
 
+  const onClose = () => {
+    setVisible(false)
+  }
+
   return (
-    <div align="center">
+    <div
+      align="center"
+      style={
+        { overflow: visible ? 'hidden' : 'auto', height: visible ? 0 : 'auto' }
+      }
+    >
       <h4 className="photo-gallery-text-h4" >Photo Gallery</h4>
       <hr/>
 
@@ -33,8 +42,27 @@ const PhotoGallery = ({ data }) => {
 
       {
         visible && (image.url && image.caption) && (
-          <div className="">
-            Selected Image
+          <div className="photo-gallery-slide-up">
+            <div>
+              <button
+                className="i-btn photo-gallery-image close"
+                onClick={ () => onClose() }
+              >
+                X
+              </button>
+            </div>
+
+            <div className="photo-gallery-slide-up-image-container">
+              <div className="photo-gallery-slide-up-image-grouping">
+                <img
+                  className="photo-gallery-slide-up-image "
+                  alt={ image.caption } src={ image.url }
+                />
+                <div className="photo-gallery-slide-up-image-caption">
+                  { image.caption }
+                </div>
+              </div>
+            </div>
           </div>
         )
       }
