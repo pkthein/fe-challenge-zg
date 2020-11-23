@@ -23,6 +23,7 @@ const PhotoGallery = ({ data }) => {
     setVisible(false)
 
     // checking if the browser is safari for smooth scroll
+    // this is needed since safari does not support window.scrollTo(Options)
     if (/apple/i.test(navigator.vendor)) {
       setTimeout(() => {
         window.scrollTo(0, prevY)
